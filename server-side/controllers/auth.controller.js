@@ -1,15 +1,17 @@
 import User from '../models/user.model.js'
 import bcrypt from 'bcryptjs';
+import { errorHandler } from '../Utils/error.js';
 
-async function register(req, res) {
+async function register(req, res, next) {
     try {
         const { name, email, password } = req.body;
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        // Input validation
+        // Input validation FIRST!
         if (!name || !email || !password) {
-            return res.status(400).json({ message: "Name, email, and password are required." });
+            return next(errorHandler(400, "All fields are required"));
         }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         // Check if user already exists
         const existingUser = await User.findOne({ email });
@@ -20,8 +22,7 @@ async function register(req, res) {
         const user = await User.create({ name, email, password: hashedPassword });
         res.json({ message: "User created successfully", user });
     } catch (error) {
-        console.error("Registration error:", error);
-        res.status(500).json({ message: "Server error. Please try again later." });
+        next(errorHandler(500, "Something went Wrong!"))
     }
 }
 
