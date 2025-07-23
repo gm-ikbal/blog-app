@@ -1,0 +1,28 @@
+{
+  "name": "blog-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon server-side/index.js",
+    "dev": "nodemon server-side/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gm-ikbal/blog-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gm-ikbal/blog-app/issues"
+  },
+  "homepage": "https://github.com/gm-ikbal/blog-app#readme",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "mongoose": "^8.16.4",
+    "nodemon": "^3.1.10"
+  }
+}
