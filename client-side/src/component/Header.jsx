@@ -41,13 +41,11 @@ export default function Header() {
       <FaMoon/>
     </Button> */}
 
-    <Button className="bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold px-4 py-2 rounded-lg shadow-md">
+    <Button className="bg-gradibg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold px-4 py-2 rounded-lgent-to-r from-purple-500 to-blue-500 text-white font-semibold px-4 py-2 rounded-lg shadow-md">
       <Link to='/sign-in'>
         Sign In
       </Link>
     </Button>
-
-
 
       </div>
 

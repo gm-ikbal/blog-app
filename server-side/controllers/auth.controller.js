@@ -4,7 +4,10 @@ import { errorHandler } from '../Utils/error.js';
 
 async function register(req, res, next) {
     try {
-        const { name, email, password } = req.body;
+        // Accept both 'name' and 'username' from the frontend
+        const name = req.body.name || req.body.username;
+        const email = req.body.email;
+        const password = req.body.password;
 
         // Input validation FIRST!
         if (!name || !email || !password) {
