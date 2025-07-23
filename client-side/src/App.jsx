@@ -6,8 +6,10 @@ import Projects from './pages/Project'
 import Signup from './pages/Signup'
 import Signin from './pages/Signin'
 import Header from './component/Header'
+import FooterCom from './component/FooterCom'
 
 export default function App() {
+  console.log('FooterCom is:', FooterCom);
   return (
     <BrowserRouter>
     <Header/>
@@ -18,7 +20,7 @@ export default function App() {
           <Route path="/signup" element={<Signup/>}></Route>
           <Route path="/signin" element={<Signin/>}></Route>
         </Routes>
+       <FooterCom/>
       </BrowserRouter>
-
   )
 }
