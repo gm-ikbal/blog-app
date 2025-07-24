@@ -12,7 +12,8 @@ app.use(express.urlencoded({ extended: true }));
 connectDB()
 
 
-app.use('/api/user', userRoutes)
+//app.use('/api/user', userRoutes)
+
 app.use('/user' , AuthRoute)
 
 
