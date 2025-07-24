@@ -7,6 +7,7 @@ import Signup from './pages/Signup'
 import Signin from './pages/Signin'
 import Header from './component/Header'
 import FooterCom from './component/FooterCom'
+import Dashboard from './pages/Dashboard'
 
 export default function App() {
   console.log('FooterCom is:', FooterCom);
@@ -19,6 +20,8 @@ export default function App() {
           <Route path="/projects" element={<Projects/>}></Route>
           <Route path="/signup" element={<Signup/>}></Route>
           <Route path="/signin" element={<Signin/>}></Route>
+          <Route path="/dashboard" element={<Dashboard/>}></Route>
+
         </Routes>
        <FooterCom/>
       </BrowserRouter>
