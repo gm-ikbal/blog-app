@@ -12,12 +12,12 @@ import { TextInput } from 'flowbite-react'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { Button } from 'flowbite-react'
 import { FaMoon } from 'react-icons/fa'
-import { useSelector } from 'react-redux'
-
+import { useDispatch, useSelector } from 'react-redux'
+import { toggleTheme } from '../redux/theme/themeSlice';
 
 export default function Header() {
   const { currentUser } = useSelector(state => state.user)
-
+  const dispatch = useDispatch();
 
   const handleSignout = async () => {
 
@@ -75,18 +75,19 @@ export default function Header() {
 
         ) : (
           <Button className="bg-gradibg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold px-4 py-2 rounded-lgent-to-r from-purple-500 to-blue-500 text-white font-semibold px-4 py-2 rounded-lg shadow-md">
-            <Link to='/sign-in'>
+            <Link to='/signin'>
               Sign In
             </Link>
           </Button>
         )}
-        <div className="flex gap-2 md:order-2">
-          {/* <Button className='w-12 h-10 hidden sm:inline' color='gray' pill>
+        {/* <div className="flex gap-2 md:order-2">
+          <Button className='w-12 h-10 hidden sm:inline' color='gray' pill 
+          onClick={()=> dispatch(toggleTheme())}>
       <FaMoon/>
-    </Button> */}
+    </Button>
 
 
-        </div>
+        </div> */}
        
       </Navbar>
     </div>
