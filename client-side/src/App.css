@@ -40,3 +40,18 @@
 .read-the-docs {
   color: #888;
 } */
+
+
+/* App.css */
+
+/* Ensure the root layout fills the screen */
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Let the main content grow to fill space between header and footer */
+.app-main {
+  flex: 1;
+}

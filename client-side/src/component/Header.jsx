@@ -71,10 +71,9 @@ export default function Header() {
             <DropdownDivider />
             <DropdownItem onClick={handleSignout}>Sign out</DropdownItem>
           </Dropdown>
-
-
         ) : (
-          <Button className="bg-gradibg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold px-4 py-2 rounded-lgent-to-r from-purple-500 to-blue-500 text-white font-semibold px-4 py-2 rounded-lg shadow-md">
+          <Button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+>
             <Link to='/signin'>
               Sign In
             </Link>
