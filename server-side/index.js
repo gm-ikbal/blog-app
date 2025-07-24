@@ -13,7 +13,6 @@ connectDB()
 
 
 //app.use('/api/user', userRoutes)
-
 app.use('/user' , AuthRoute)
 
 

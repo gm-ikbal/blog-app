@@ -21,7 +21,7 @@ export default function Foot() {
               <h4 className='font-bold mb-2'>About</h4>
               <div className='flex flex-col gap-1'>
                 <a href='https://www.100jsprojects.com' target='_blank' rel='noopener noreferrer' className='hover:underline'>100 JS Projects</a>
-                <a href='/about' target='_blank' rel='noopener noreferrer' className='hover:underline'>Cleverly's Blog</a>
+                <a href='/about' target='_blank' rel='noopener noreferrer' className='hover:underline'>Blogify Blogs</a>
               </div>
             </div>
             <div>
