@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { TextInput, Button } from 'flowbite-react';
 import React, { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux';
@@ -17,6 +16,7 @@ const filePickerRef = useRef(null);
      setImageFileUrl(URL.createObjectURL(file));
     }
   };
+  
 useEffect(()=>{
     if(imageFile){
         uploadImage();
