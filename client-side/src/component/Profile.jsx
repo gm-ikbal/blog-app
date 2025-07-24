@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { TextInput, Button } from 'flowbite-react';
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
 
@@ -17,6 +17,15 @@ const filePickerRef = useRef(null);
      setImageFileUrl(URL.createObjectURL(file));
     }
   };
+useEffect(()=>{
+    if(imageFile){
+        uploadImage();
+    }
+},[imageFile])
+
+const uploadImage = async () => {
+   console.log("uploadin..")
+}
 
     return (
         <div className='max-w-lg mx-auto p-3 w-full'>
