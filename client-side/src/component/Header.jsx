@@ -15,7 +15,7 @@ export default function Header() {
       >
            <Link
         to='/'
-        className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'
+        className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold light:text-white'
       >
           <span className='px-4 py-2 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-300 rounded-lg text-gray-800'>
        Blogify

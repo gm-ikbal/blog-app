@@ -1,14 +1,16 @@
-import flowbiteReact from "flowbite-react/plugin/tailwindcss";
+// tailwind.config.js
+import flowbite from 'flowbite/plugin';
 
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-    ".flowbite-react/class-list.json"
+    './index.html',
+    './src/**/*.{js,ts,jsx,tsx}',
+    'node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}',
+    'node_modules/flowbite/**/*.{js,jsx,ts,tsx}',
   ],
   theme: {
     extend: {},
   },
-  plugins: [flowbiteReact],
-}
+  plugins: [flowbite],
+};

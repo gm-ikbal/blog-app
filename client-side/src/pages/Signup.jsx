@@ -12,7 +12,7 @@ export default function Signup() {
 
 
   const navigate = useNavigate();
-  
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
@@ -45,7 +45,6 @@ export default function Signup() {
       setLoading(false);
     }
   };
-   
   return (
     <div className='min-h-screen mt-20'>
       <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5'>
@@ -59,64 +58,78 @@ export default function Signup() {
             </span>
           </Link>
           <p className="text-sm mt-5">
-            This is a demo project. You can sign up with your email and password
+            This is a demo project. You can sign up with your email and password.
           </p>
         </div>
-        <div className='flex-1'>
-          <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
+        <div className="flex-1">
+          <form className="flex max-w-md flex-col gap-4" onSubmit={handleSubmit}>
+
             <div>
-              <Label value='Your username' />
+              <div className="mb-1 block ">
+                <label htmlFor="username" className="text-gray-400 font-bold">Your username</label>
+              </div>
               <TextInput
-                type='text'
-                placeholder='Username'
-                id='username'
+                id="username"
+                type="text"
+                placeholder="Username"
+                onChange={handleChange}
+
+              />
+            </div>
+
+            <div>
+              <div className="mb-1 block ">
+                <label htmlFor="email" className="text-gray-400 font-bold">Your email</label>
+              </div>
+              <TextInput
+                type="email"
+                placeholder="name@company.com"
+                id="email"
                 onChange={handleChange}
               />
             </div>
+
             <div>
-              <Label value='Your email' />
+              <div className="mb-1 block ">
+                <label htmlFor="password" className="text-gray-400 font-bold">Your Password</label>
+              </div>
               <TextInput
-                type='email'
-                placeholder='name@company.com'
-                id='email'
+                type="password"
+                placeholder="Password"
+                id="password"
                 onChange={handleChange}
               />
             </div>
-            <div>
-              <Label value='Your password' />
-              <TextInput
-                type='password'
-                placeholder='Password'
-                id='password'
-                onChange={handleChange}
-              />
-            </div>
-            <Button 
-            type="submit"
-             disabled={loading}
-              >
-                {
-                  loading ? (
-                    <>
+
+            <Button
+              type="submit"
+              disabled={loading}
+              className="bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+            >
+              {
+                loading ? (
+                  <>
                     <Spinner size="sm" />
                     <span className="pl-3">Loading...</span>
-                    </>
+                  </>
 
-                  ) : ("Sign Up")
-                  }
+                ) : ("Sign Up")
+              }
             </Button>
           </form>
-          <div className='flex gap-2 text-sm mt-5'>
-            <span>Have an account?</span>
-            <Link to='/sign-in' className='text-blue-500'>
+          <div className="flex gap-2 text-sm mt-5">
+            <span>Already have an account?</span>
+            <Link to="/signin" className="text-blue-500">
               Sign In
             </Link>
           </div>
+
           {errorMessage && (
-              <Alert className="mt-5" color="failure">
-                {errorMessage}
-              </Alert>
-            )}
+            <Alert className="mt-5" color="failure">
+              {errorMessage}
+            </Alert>
+          )}
+
         </div>
       </div>
     </div>
