@@ -1,5 +1,6 @@
 import multer from 'multer';
 import { errorHandler } from '../Utils/error.js';
+import User from '../models/user.model.js';
 
 // Configure multer for image upload
 const storage = multer.memoryStorage();
@@ -27,16 +28,32 @@ export const uploadImage = async (req, res, next) => {
             return next(errorHandler(400, 'No image file provided'));
         }
 
-        // Convert the image buffer to base64
+        // Save image to database
         const imageBuffer = req.file.buffer;
-        const base64Image = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
+        const contentType = req.file.mimetype;
 
-        console.log('Image processed successfully, size:', imageBuffer.length);
+        // Update user's profile image in database
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user.id,
+            {
+                profileImage: {
+                    data: imageBuffer,
+                    contentType: contentType
+                }
+            },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return next(errorHandler(404, 'User not found'));
+        }
+
+        console.log('Image saved to database successfully, size:', imageBuffer.length);
 
         res.status(200).json({
             success: true,
-            imageUrl: base64Image,
-            message: 'Image uploaded successfully'
+            message: 'Image uploaded and saved to database successfully',
+            userId: updatedUser._id
         });
     } catch (error) {
         console.error('Error in uploadImage:', error);

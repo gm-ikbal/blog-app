@@ -28,6 +28,7 @@ export default function Profile() {
     const [imageFile, setImageFile] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
     const [showModal, setShowModal] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     
@@ -130,9 +131,25 @@ export default function Profile() {
         }
     }, [imageFile])
 
+    const getProfileImageUrl = () => {
+        if (imageFileUrl) {
+            return imageFileUrl;
+        }
+        if (currentUser?._id) {
+            return `/image/profile/${currentUser._id}`;
+        }
+        return currentUser?.profilePicture || '';
+    };
+
+    const handleImageError = (e) => {
+        // Fallback to default profile picture if image fails to load
+        e.target.src = currentUser?.profilePicture || 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D';
+    };
+
     const uploadImage = async () => {
         if (!imageFile) return;
         
+        setIsUploading(true);
         const formData = new FormData();
         formData.append('image', imageFile);
         
@@ -156,17 +173,17 @@ export default function Profile() {
             console.log('Upload response:', data);
             
             if (data.success) {
-                setFormData(prev => ({
-                    ...prev,
-                    profilePicture: data.imageUrl
-                }));
                 setSuccessMessage('Image uploaded successfully!');
+                // Force a re-render by updating the image URL
+                setImageFileUrl(URL.createObjectURL(imageFile));
             } else {
                 setSuccessMessage('Failed to upload image');
             }
         } catch (error) {
             console.error('Error uploading image:', error);
             setSuccessMessage('Error uploading image: ' + error.message);
+        } finally {
+            setIsUploading(false);
         }
     }
 
@@ -186,12 +203,18 @@ export default function Profile() {
                     />
                 </div>
 
-                <div className="w-32 h-32 self-center cursor-pointer shadow-md overflow-hidden rounded-full" onClick={() => filePickerRef.current.click()}>
+                <div className="w-32 h-32 self-center cursor-pointer shadow-md overflow-hidden rounded-full relative" onClick={() => filePickerRef.current.click()}>
                     <img
-                        src={imageFileUrl || currentUser?.profilePicture}
+                        src={getProfileImageUrl()}
                         alt="user"
                         className='rounded-full w-full h-full object-cover border-8 border-[lightgray]'
+                        onError={handleImageError}
                     />
+                    {isUploading && (
+                        <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
+                            <div className="text-white text-sm">Uploading...</div>
+                        </div>
+                    )}
                 </div>
 
                 <TextInput

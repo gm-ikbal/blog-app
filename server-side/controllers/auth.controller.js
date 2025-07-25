@@ -40,7 +40,7 @@ export const signin = async (req, res, next) => {
       return next(errorHandler(400, "Invalid password!"));
     }
     const token = jwt.sign({ id: validUser._id, isAdmin: validUser.isAdmin }, process.env.JWT_SECRET);
-    const { password: pass, ...rest } = validUser._doc;
+    const { password: pass, profileImage, ...rest } = validUser._doc;
     res.status(200).cookie("access_token", token, {
       httpOnly: true,
     })
@@ -59,7 +59,7 @@ export const googleAuth = async (req, res, next) => {
         { id: user._id, isAdmin: user.isAdmin },
         process.env.JWT_SECRET
       );
-      const { password, ...rest } = user._doc;
+      const { password, profileImage, ...rest } = user._doc;
       res
         .status(200)
         .cookie('access_token', token, {
@@ -85,7 +85,7 @@ export const googleAuth = async (req, res, next) => {
         { id: newUser._id, isAdmin: newUser.isAdmin },
         process.env.JWT_SECRET
       );
-      const { password, ...rest } = newUser._doc;
+      const { password, profileImage, ...rest } = newUser._doc;
       res
         .status(200)
         .cookie('access_token', token, {

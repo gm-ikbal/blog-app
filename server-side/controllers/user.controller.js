@@ -37,7 +37,7 @@ export const userUpdate = async (req, res, next) => {
             },
             { new: true } 
         )
-        const { password, ...rest } = updatedUser._doc
+        const { password, profileImage, ...rest } = updatedUser._doc
         res.status(200).json(rest)
     } catch (error) {
         return next(error)
