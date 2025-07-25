@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import { Select, TextInput, FileInput, Button, Alert } from 'flowbite-react'
+import { Select, TextInput, FileInput, Button, Alert, Spinner } from 'flowbite-react'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useDispatch } from 'react-redux';
 
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-
+import { useNavigate } from 'react-router-dom';
 
 export default function Post() {
     const [formData, setFormData] = useState({
@@ -19,15 +19,55 @@ export default function Post() {
       const [imageUploadProgress, setImageUploadProgress] = useState(0);
       const [imageUploadError, setImageUploadError] = useState(null);
       const [publishError, setPublishError] = useState(null);
+      const [publishSuccess, setPublishSuccess] = useState(null);
       const [isUploading, setIsUploading] = useState(false);
       const dispatch = useDispatch();
-      
+      const navigate = useNavigate();
+      const [isLoading, setIsLoading] = useState(false);
       const handleSubmit = async (e) => {
         e.preventDefault();
-        dispatch(createPostStart(formData));
+        handlePublish(e);
     }
-    
-    const handleImageChange = (e) => {
+    const handlePublish = async (e) => {
+      e.preventDefault();
+      setIsLoading(true);
+      try {
+        const res = await fetch('/post/createpost', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+                 const data = await res.json();
+         console.log('Response data:', data);
+         console.log('Post slug:', data.post?.slug);
+         if (!res.ok) {
+          setPublishError(data.message);
+          return;
+        }
+  
+                 if (res.ok) {
+           setPublishError(null);
+           if (data.post && data.post.slug) {
+             navigate(`/post/${data.post.slug}`);
+           } else if (data.post && data.post._id) {
+             // Fallback to using post ID if slug is not available
+             navigate(`/post/${data.post._id}`);
+           } else {
+             console.error('No slug or ID found in response:', data);
+             setPublishError('Post created but navigation failed');
+           }
+         }
+      } catch (error) {
+        setPublishError('Something went wrong');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+
+      const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             // Check file size (10MB limit)
@@ -230,14 +270,25 @@ export default function Post() {
               onChange={(value) => {
                 setFormData({ ...formData, content: value });
               }}
-         
+
             />
-            <Button type='submit' className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-              Publish
-            </Button>
+            {isLoading ? (
+              <Button type='submit' className="bg-gradient-to-r from-purple-500 to-pink-500 text-white" disabled={isUploading}>
+                <Spinner />
+              </Button>
+            ) : (
+              <Button type='submit' className="bg-gradient-to-r from-purple-500 to-pink-500 text-white" disabled={isUploading}>
+                Publish
+              </Button>
+            )}
             {publishError && (
               <Alert className='mt-5' color='failure'>
                 {publishError}
+              </Alert>
+            )}
+            {publishSuccess && (
+              <Alert className='mt-5' color='success'>
+                {publishSuccess}
               </Alert>
             )}
           </form>
@@ -245,4 +296,6 @@ export default function Post() {
         </div>
       );
 }
+
+
 

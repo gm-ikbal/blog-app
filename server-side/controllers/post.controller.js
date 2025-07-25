@@ -1,6 +1,7 @@
 import Post from '../models/post.model.js'
+import { errorHandler } from '../Utils/error.js'
 
-export const createPost = async (req, res) => {
+export const createPost = async (req, res, next) => {
     if (!req.user.isAdmin) {
         return next(errorHandler(403, 'You are not allowed to create a post'));
     }
@@ -11,7 +12,8 @@ export const createPost = async (req, res) => {
         .split(' ')
         .join('-')
         .toLowerCase()
-        .replace(/[^a-zA-Z0-9-]/g, '');
+        .replace(/[^a-zA-Z0-9-]/g, '')
+        + '-' + Date.now();
     const newPost = new Post({
         ...req.body,
         slug,
@@ -19,8 +21,15 @@ export const createPost = async (req, res) => {
     });
     try {
         const savedPost = await newPost.save();
-        res.status(201).json(savedPost);
+        console.log('Saved post:', savedPost);
+        console.log('Post slug:', savedPost.slug);
+        res.status(201).json({
+            success: true,
+            message: 'Post created successfully',
+            post: savedPost
+        });
     } catch (error) {
+        console.error('Error saving post:', error);
         next(error);
     }
 }
