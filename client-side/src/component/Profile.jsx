@@ -6,9 +6,20 @@ import { TextInput, Button, Alert, Modal, ModalHeader, ModalBody } from 'flowbit
 import React, { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
-import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserSuccess, deleteUserFailure } from '../redux/user/userSlice';
+import { 
+    updateUserStart, 
+    updateUserSuccess, 
+    updateUserFailure, 
+    deleteUserSuccess, 
+    deleteUserFailure, 
+    signOutStart, 
+    signOutSuccess, 
+    signOutFailure
+ } 
+    from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
+import { useNavigate } from 'react-router-dom'; 
 
 
 export default function Profile() {
@@ -17,16 +28,15 @@ export default function Profile() {
     const [imageFile, setImageFile] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
     const [showModal, setShowModal] = useState(false);
-
+    const navigate = useNavigate();
     const dispatch = useDispatch();
-
     useEffect(() => {
         if (successMessage) {
             const timer = setTimeout(() => {
                 setSuccessMessage('');
             }, 2000);
 
-            return () => clearTimeout(timer); // cleanup
+            return () => clearTimeout(timer); 
         }
     }, [successMessage]);
 
@@ -44,7 +54,7 @@ export default function Profile() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         dispatch(updateUserStart())
-        setSuccessMessage('') // Clear any previous success message
+        setSuccessMessage('') 
 
         try {
             const res = await fetch(`/user/update/${currentUser._id}`, {
@@ -84,6 +94,25 @@ export default function Profile() {
             dispatch(deleteUserFailure(error))
         }
     }
+
+    const handleSignOut = async () => {
+        dispatch(signOutStart())
+        try {
+            const res = await fetch(`/user/signout`, {
+                method: 'POST',
+            })
+            if (res.ok) {
+                dispatch(signOutSuccess())
+                setSuccessMessage('Signed out successfully!')
+                navigate('/')
+            }
+        }
+        catch (error) {
+            dispatch(signOutFailure(error))
+        }
+    }
+
+
 
     const filePickerRef = useRef(null);
     const handleImageChange = (e) => {
@@ -185,7 +214,7 @@ export default function Profile() {
 
             <div className='text-red-500 flex justify-between mt-5'>
                 <span className='cursore-pointer' onClick={() => setShowModal(true)}>Delete Account</span>
-                <span className='cursore-pointer'>Sign Out</span>
+                <span className='cursore-pointer' onClick={handleSignOut}>Sign Out</span>
             </div>
 
         </div>

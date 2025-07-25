@@ -72,12 +72,12 @@ export default function Header() {
             <DropdownItem onClick={handleSignout}>Sign out</DropdownItem>
           </Dropdown>
         ) : (
-          <Button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white"
->
-            <Link to='/signin'>
+          <Link to='/signin'>
+            <Button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
               Sign In
-            </Link>
-          </Button>
+            </Button>
+          </Link>
+
         )}
         {/* <div className="flex gap-2 md:order-2">
           <Button className='w-12 h-10 hidden sm:inline' color='gray' pill 

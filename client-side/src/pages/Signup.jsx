@@ -36,7 +36,7 @@ export default function Signup() {
       } else {
         setErrorMessage(null);
         setFormData({});
-        navigate("/sign-in");
+        navigate("/signin");
       }
 
       setLoading(false)
