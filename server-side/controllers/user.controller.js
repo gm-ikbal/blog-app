@@ -1,6 +1,7 @@
 import User from '../models/user.model.js'
 import bcryptjs from 'bcryptjs'
 import { errorHandler } from '../Utils/error.js'
+import Post from '../models/post.model.js'
 
 export const userUpdate = async (req, res, next) => {
     if (req.user.id !== req.params.userId) {
@@ -18,29 +19,55 @@ export const userUpdate = async (req, res, next) => {
                 errorHandler(400, 'Username must be between 7 and 20 characters')
             );
         }
-        const username = await User.findOne({ username: req.body.username })
-        if (username) {
-            return next(errorHandler(400, 'Username already exists'))
+        if (req.body.username.includes(' ')) {
+            return next(errorHandler(400, 'Username cannot contain spaces'));
+        }
+        if (req.body.username !== req.body.username.toLowerCase()) {
+            return next(errorHandler(400, 'Username must be lowercase'));
+        }
+        if (!req.body.username.match(/^[a-zA-Z0-9]+$/)) {
+            return next(
+                errorHandler(400, 'Username can only contain letters and numbers')
+            );
         }
     }
-
     try {
+        // Create update object with only provided fields
+        const updateFields = {};
+        if (req.body.username) {
+            updateFields.username = req.body.username;
+        }
+        if (req.body.email) {
+            updateFields.email = req.body.email;
+        }
+        if (req.body.profilePicture) {
+            updateFields.profilePicture = req.body.profilePicture;
+        }
+        if (req.body.password) {
+            updateFields.password = req.body.password;
+        }
+
+        // Only update if there are fields to update
+        if (Object.keys(updateFields).length === 0) {
+            return next(errorHandler(400, 'No fields to update'));
+        }
+
         const updatedUser = await User.findByIdAndUpdate(
             req.params.userId,
             {
-                $set: {
-                    username: req.body.username,
-                    email: req.body.email,
-                    profilePicture: req.body.profilePicture,
-                    password: req.body.password,
-                }
+                $set: updateFields,
             },
-            { new: true } 
-        )
-        const { password, profileImage, ...rest } = updatedUser._doc
-        res.status(200).json(rest)
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return next(errorHandler(404, 'User not found'));
+        }
+
+        const { password, profileImage, ...rest } = updatedUser._doc;
+        res.status(200).json(rest);
     } catch (error) {
-        return next(error)
+        next(error);
     }
 };
 
@@ -64,3 +91,43 @@ export const userSignOut = async (req, res, next) => {
         next(error);
     }
 }
+
+export const getPosts = async (req, res, next) => {
+    try {
+        const startIndex = parseInt(req.query.startIndex) || 0;
+        const limit = parseInt(req.query.limit) || 9;
+        const sortDirection = req.query.order === 'asc' ? 1 : -1;
+        const posts = await Post.find({
+            ...(req.query.userId && { userId: req.query.userId }),
+            ...(req.query.category && { category: req.query.category }),
+            ...(req.query.slug && { slug: req.query.slug }),
+            ...(req.query.postId && { _id: req.query.postId }),
+            ...(req.query.searchTerm && {
+                $or: [
+                    { title: { $regex: req.query.searchTerm, $options: 'i' } },
+                    { content: { $regex: req.query.searchTerm, $options: 'i' } },
+                ],
+            }),
+        })
+            .sort({ updatedAt: sortDirection })
+            .skip(startIndex)
+            .limit(limit);
+        const totalPosts = await Post.countDocuments();
+        const now = new Date();
+        const oneMonthAgo = new Date(
+            now.getFullYear(),
+            now.getMonth() - 1,
+            now.getDate()
+        );
+        const lastMonthPosts = await Post.countDocuments({
+            createdAt: { $gte: oneMonthAgo },
+        });
+        res.status(200).json({
+            posts,
+            totalPosts,
+            lastMonthPosts,
+        });
+    } catch (error) {
+        next(error);
+    }
+};

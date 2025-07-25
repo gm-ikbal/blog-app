@@ -49,6 +49,18 @@ export default function Profile() {
         profilePicture: currentUser?.profilePicture || '',
     })
 
+    // Update form data when currentUser changes
+    useEffect(() => {
+        if (currentUser) {
+            setFormData({
+                username: currentUser.username || '',
+                email: currentUser.email || '',
+                password: '',
+                profilePicture: currentUser.profilePicture || '',
+            });
+        }
+    }, [currentUser]);
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.id]: e.target.value });
     };
@@ -59,25 +71,52 @@ export default function Profile() {
         setSuccessMessage('')
 
         try {
+            // Create update object with only changed fields
+            const updateData = {};
+            
+            if (formData.username && formData.username !== currentUser?.username) {
+                updateData.username = formData.username;
+            }
+            if (formData.email && formData.email !== currentUser?.email) {
+                updateData.email = formData.email;
+            }
+            if (formData.password && formData.password.trim() !== '') {
+                updateData.password = formData.password;
+            }
+            if (formData.profilePicture && formData.profilePicture !== currentUser?.profilePicture) {
+                updateData.profilePicture = formData.profilePicture;
+            }
+            
+            // Only send request if there are changes
+            if (Object.keys(updateData).length === 0) {
+                setSuccessMessage('No changes to update');
+                return;
+            }
+            
             const res = await fetch(`/user/update/${currentUser._id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(updateData)
             })
             const data = await res.json()
             if (res.ok) {
                 dispatch(updateUserSuccess(data))
                 setSuccessMessage('Profile updated successfully!')
+                // Reset password field and update form with new data
                 setFormData(prev => ({
                     ...prev,
                     password: '',
-                    username: '',
+                    username: data.username || prev.username,
+                    email: data.email || prev.email,
                     profilePicture: data.profilePicture || prev.profilePicture
                 }))
+            } else {
+                setSuccessMessage(data.message || 'Failed to update profile');
             }
         }
         catch (error) {
             dispatch(updateUserFailure(error))
+            setSuccessMessage('Error updating profile');
         }
     }
 
