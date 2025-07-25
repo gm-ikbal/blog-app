@@ -1,12 +1,72 @@
-import { TextInput, Button } from 'flowbite-react';
+
+
+
+/* eslint-disable no-unused-vars */
+import { TextInput, Button, Alert } from 'flowbite-react';
 import React, { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
+import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/user/userSlice';
+import { useDispatch } from 'react-redux';
+
 
 export default function Profile() {
     const { currentUser } = useSelector((state) => state.user);
     const [imageFileUrl, setImageFileUrl] = useState(null);
     const [imageFile, setImageFile] = useState(null);
+    const [successMessage, setSuccessMessage] = useState('');
+    const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage('');
+      }, 2000); 
+
+      return () => clearTimeout(timer); // cleanup
+    }
+  }, [successMessage]);
+    
+ const [formData, setFormData] = useState({
+    username: currentUser?.username || '',
+    email: currentUser?.email || '',
+    password: '',
+    profilePicture: currentUser?.profilePicture || '',
+ })
+
+ const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+ };
+
+ const handleSubmit = async (e) => {
+    e.preventDefault()
+    dispatch(updateUserStart())
+    setSuccessMessage('') // Clear any previous success message
+
+    try{
+        const res = await fetch(`/user/update/${currentUser._id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        })
+        const data = await res.json()
+        if (res.ok) {
+            dispatch(updateUserSuccess(data))
+            setSuccessMessage('Profile updated successfully!')
+            setFormData(prev => ({
+                ...prev,
+                password: '',
+                username: '',
+
+            }))
+        }
+    }
+    catch(error){
+        dispatch(updateUserFailure(error))
+    }
+ }
+
+    
 
     const filePickerRef = useRef(null);
     const handleImageChange = (e) => {
@@ -30,7 +90,7 @@ export default function Profile() {
     return (
         <div className='max-w-lg mx-auto p-3 w-full'>
             <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
-            <form className='flex flex-col gap-4'>
+            <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
                 <div className="flex items-center gap-4">
 
                     <input
@@ -45,20 +105,42 @@ export default function Profile() {
 
                 <div className="w-32 h-32 self-center cursor-pointer shadow-md overflow-hidden rounded-full" onClick={() => filePickerRef.current.click()}>
                     <img
-                        src={imageFileUrl || currentUser["profile Picture"]}
+                        src={imageFileUrl || currentUser?.profilePicture}
                         alt="user"
                         className='rounded-full w-full h-full object-cover border-8 border-[lightgray]'
                     />
                 </div>
 
-                <TextInput type='text' id='username' placeholder='username'
-                    defaultValue={currentUser.username} />
-                <TextInput type='text' id='email' placeholder='email'
-                    defaultValue={currentUser.email} />
-                <TextInput type='text' id='password' placeholder='password'
+                <TextInput 
+                    type='text' 
+                    id='username' 
+                    placeholder='username'
+                    value={formData.username}
+                    onChange={handleChange}
+                />
+                <TextInput 
+                    type='text' 
+                    id='email' 
+                    placeholder='email'
+                    value={formData.email}
+                    onChange={handleChange}
+                />
+                <TextInput 
+                    type='password' 
+                    id='password' 
+                    placeholder='password'
+                    value={formData.password}
+                    onChange={handleChange}
                 />
                 <Button type='submit' className="bg-gradient-to-r from-purple-500 to-pink-500 text-white"> Update</Button>
             </form>
+            
+            {successMessage && (
+                <Alert className="mt-5" color="success">
+                    {successMessage}
+                </Alert>
+            )}
+            
             <div className='text-red-500 flex justify-between mt-5'>
                 <span className='cursore-pointer'>Delete Account</span>
                 <span className='cursore-pointer'>Sign Out</span>

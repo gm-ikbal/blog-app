@@ -18,7 +18,7 @@ export const userUpdate = async (req, res, next) => {
                 errorHandler(400, 'Username must be between 7 and 20 characters')
             );
         }
-        const username = await User.findOne({username: req.body.username})
+        const username = await User.findOne({ username: req.body.username })
         if (username) {
             return next(errorHandler(400, 'Username already exists'))
         }
@@ -35,7 +35,7 @@ export const userUpdate = async (req, res, next) => {
                     password: req.body.password,
                 }
             },
-            { new: true } // to return the updated user
+            { new: true } 
         )
         const { password, ...rest } = updatedUser._doc
         res.status(200).json(rest)
@@ -44,14 +44,14 @@ export const userUpdate = async (req, res, next) => {
     }
 };
 
-//     export const deleteUser = async (req, res, next) => {
-//       if (!req.user.isAdmin && req.user.id !== req.params.userId) {
-//         return next(errorHandler(403, 'You are not allowed to delete this user'));
-//       }
-//       try {
-//         await User.findByIdAndDelete(req.params.userId);
-//         res.status(200).json('User has been deleted');
-//       } catch (error) {
-//         next(error);
-//       }
-// }
+export const userDelete = async (req, res, next) => {
+    if (!req.user.isAdmin && req.user.id !== req.params.userId) {
+        return next(errorHandler(403, 'You are not allowed to delete this user'));
+    }
+    try {
+        await User.findByIdAndDelete(req.params.userId);
+        res.status(200).json('User has been deleted');
+    } catch (error) {
+        next(error);
+    }
+}

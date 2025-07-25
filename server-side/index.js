@@ -14,7 +14,7 @@ app.use(cookieParser())
 connectDB()
 
 
-//app.use('/api/user', userRoutes)
+app.use('/user', userRoutes)
 app.use('/user' , AuthRoute)
 
 
