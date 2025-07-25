@@ -9,7 +9,16 @@ body {
 
 .ql-editor {
     font-size: 1.05rem;
+    background-color: rgb(55 65 81);
 }
+.ql-toolbar {
+    background-color: rgb(87, 92, 99);
+}
+
+.quill{
+  border-radius: 10px;
+}
+
 
 
 .post-content p {

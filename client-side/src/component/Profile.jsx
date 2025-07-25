@@ -6,21 +6,21 @@ import { TextInput, Button, Alert, Modal, ModalHeader, ModalBody } from 'flowbit
 import React, { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
-import { 
-    updateUserStart, 
-    updateUserSuccess, 
-    updateUserFailure, 
-    deleteUserSuccess, 
-    deleteUserFailure, 
-    signOutStart, 
-    signOutSuccess, 
+import {
+    updateUserStart,
+    updateUserSuccess,
+    updateUserFailure,
+    deleteUserSuccess,
+    deleteUserFailure,
+    signOutStart,
+    signOutSuccess,
     signOutFailure
- } 
+}
     from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
-import { useNavigate } from 'react-router-dom'; 
-
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export default function Profile() {
     const { currentUser } = useSelector((state) => state.user);
@@ -36,7 +36,7 @@ export default function Profile() {
                 setSuccessMessage('');
             }, 2000);
 
-            return () => clearTimeout(timer); 
+            return () => clearTimeout(timer);
         }
     }, [successMessage]);
 
@@ -54,7 +54,7 @@ export default function Profile() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         dispatch(updateUserStart())
-        setSuccessMessage('') 
+        setSuccessMessage('')
 
         try {
             const res = await fetch(`/user/update/${currentUser._id}`, {
@@ -179,6 +179,17 @@ export default function Profile() {
                     onChange={handleChange}
                 />
                 <Button type='submit' className="bg-gradient-to-r from-purple-500 to-pink-500 text-white"> Update</Button>
+
+                {currentUser?.isAdmin && (
+                    <Link to={'/createpost'}>
+                        <Button
+                            type='button'
+                            className='w-full flex items-center justify-center gap-2 border-2 bg-gradient-to-r from-white-500 to-black-500 text-grey-600'
+                        >
+                            Create a post
+                        </Button>
+                    </Link>
+                )}
             </form>
 
             {successMessage && (
