@@ -7,6 +7,7 @@ import bcryptjs from "bcryptjs";
 export const register = async (req, res, next) => {
   try {
     const name = req.body.name || req.body.username;
+    const username = req.body.username || name;
     const email = req.body.email;
     const password = req.body.password;
     if (!name || !email || !password) {
@@ -17,7 +18,7 @@ export const register = async (req, res, next) => {
     if (existingUser) {
       return res.status(409).json({ message: "User with this email already exists." });
     }
-    const user = await User.create({ name, email, password: hashedPassword });
+    const user = await User.create({ name, username, email, password: hashedPassword });
     res.json({ message: "User created successfully", user });
   } catch (error) {
     next(errorHandler(500, "Something went Wrong!"))
@@ -71,6 +72,7 @@ export const googleAuth = async (req, res, next) => {
         Math.random().toString(36).slice(-8);
       const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
       const newUser = new User({
+        name,
         username:
           name.toLowerCase().split(' ').join('') +
           Math.random().toString(9).slice(-4),

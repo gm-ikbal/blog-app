@@ -30,6 +30,7 @@ export default function Profile() {
     const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    
     useEffect(() => {
         if (successMessage) {
             const timer = setTimeout(() => {
@@ -70,7 +71,7 @@ export default function Profile() {
                     ...prev,
                     password: '',
                     username: '',
-
+                    profilePicture: data.profilePicture || prev.profilePicture
                 }))
             }
         }
@@ -130,7 +131,43 @@ export default function Profile() {
     }, [imageFile])
 
     const uploadImage = async () => {
-        console.log("uploadin..")
+        if (!imageFile) return;
+        
+        const formData = new FormData();
+        formData.append('image', imageFile);
+        
+        try {
+            console.log('Uploading image...', imageFile.name);
+            const res = await fetch('/image/upload', {
+                method: 'POST',
+                body: formData,
+            });
+            
+            console.log('Response status:', res.status);
+            
+            if (!res.ok) {
+                const errorText = await res.text();
+                console.error('Upload failed:', errorText);
+                setSuccessMessage('Failed to upload image: ' + res.status);
+                return;
+            }
+            
+            const data = await res.json();
+            console.log('Upload response:', data);
+            
+            if (data.success) {
+                setFormData(prev => ({
+                    ...prev,
+                    profilePicture: data.imageUrl
+                }));
+                setSuccessMessage('Image uploaded successfully!');
+            } else {
+                setSuccessMessage('Failed to upload image');
+            }
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            setSuccessMessage('Error uploading image: ' + error.message);
+        }
     }
 
     return (

@@ -2,6 +2,7 @@ import express from 'express'
 import { connectDB } from './connection.js'
 import userRoutes from './routes/user.routes.js'
 import AuthRoute from './routes/auth.route.js'
+import imageRoutes from './routes/image.routes.js'
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 
@@ -16,6 +17,7 @@ connectDB()
 
 app.use('/user', userRoutes)
 app.use('/user' , AuthRoute)
+app.use('/image', imageRoutes)
 
 
 
