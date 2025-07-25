@@ -4,14 +4,16 @@ import { useLocation, Link, useNavigate } from 'react-router-dom';
 import {
   HiUser,
   HiArrowSmRight,
+  HiDocumentText,
 } from 'react-icons/hi';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { signOutStart, signOutSuccess, signOutFailure } from '../redux/user/userSlice';
 export default function SideBar() {
   const location = useLocation();
   const [tab, setTab] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { currentUser } = useSelector((state) => state.user);
   const handleSignOut = async () => {
     dispatch(signOutStart())
     try {
@@ -38,17 +40,28 @@ export default function SideBar() {
   return (
    <Sidebar className="w-full md:w-56">
       <SidebarItems>
-        <SidebarItemGroup>
+        <SidebarItemGroup className='flex flex-col gap-1'>
           <SidebarItem
             as={Link}
             to="/dashboard?tab=profile"
             active={tab === 'profile'}
             icon={HiUser}
-            label="User"
+            label={currentUser.isAdmin ? 'Admin' : 'User'}
             labelColor="dark"
           >
             Profile
           </SidebarItem>
+          {currentUser && currentUser.isAdmin && (
+          <SidebarItem
+            as={Link}
+            to="/dashboard?tab=posts"
+            active={tab === 'posts'}
+            icon={HiDocumentText}
+          >
+            Posts
+          </SidebarItem>
+          )}
+
 
           <SidebarItem
             icon={HiArrowSmRight}
