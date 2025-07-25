@@ -3,12 +3,14 @@ import { connectDB } from './connection.js'
 import userRoutes from './routes/user.routes.js'
 import AuthRoute from './routes/auth.route.js'
 import dotenv from 'dotenv'
+import cookieParser from 'cookie-parser'
+
 dotenv.config()
 const app = express()
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cookieParser())
 connectDB()
 
 
