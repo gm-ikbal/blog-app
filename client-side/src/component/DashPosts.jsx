@@ -102,18 +102,11 @@ export default function DashPosts() {
                                             <img src={getImageSrc(post)}
                                                 alt={post.title}
                                                 className='w-20 h-20 object-cover bg-gray-500'
-                                                onError={(e) => {
-                                                    console.error('Image failed to load for post:', post.title);
-                                                    console.error('Image data length:', post.image ? post.image.length : 'No image');
-                                                    console.error('Image data starts with:', post.image ? post.image.substring(0, 50) : 'No image');
-                                                    console.error('Is valid base64:', post.image ? post.image.startsWith('data:image/') : false);
-                                                    console.error('Is valid image data:', isValidImageData(post.image));
-                                                    e.target.src = 'https://www.hostinger.com/tutorials/wp-content/uploads/sites/2/2021/09/how-to-write-a-blog-post.png';
-                                                }}
-                                                onLoad={() => console.log('Image loaded successfully:', post.title)} />
+                                            
+                         />
                                         </Link>
                                     </TableCell>
-                                    <TableCell className='font-medium text-gray-500 dark:text-gray-300'>{post.title}</TableCell>
+                                    <TableCell className='font-medium text-gray-500 dark:text-gray-300'> <Link to={`/post/${post.slug}`} className='hover:underline'>{post.title}</Link></TableCell>
                                     <TableCell className='font-medium text-gray-500 dark:text-gray-300'>{post.category}</TableCell>
                                     <TableCell>
                                         <span className='font-medium text-red-500 hover:underline cursor-pointer'

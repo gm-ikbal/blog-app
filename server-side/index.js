@@ -5,6 +5,7 @@ import AuthRoute from './routes/auth.route.js'
 import imageRoutes from './routes/image.routes.js'
 import postImageRoutes from './routes/postImage.routes.js'
 import postRoutes from './routes/post.routes.js'
+import commentRoutes from './routes/comment.routes.js'
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 import path from 'path'
@@ -26,7 +27,7 @@ app.use('/user' , AuthRoute)
 app.use('/image', imageRoutes)
 app.use('/post-image', postImageRoutes)
 app.use('/post', postRoutes)
-
+app.use('/comment', commentRoutes)
 
 
 //middleware for error handling 
