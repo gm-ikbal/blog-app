@@ -67,7 +67,7 @@ export default function Header() {
           to='/'
           className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold light:text-white'
         >
-          <span className='px-4 py-2 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-300 rounded-lg text-gray-800'>
+          <span className='px-4 py-2 bg-gradient-to-r from-teal-600 via-teal-500 to-teal-400 rounded-lg text-black'>
             Blogify
           </span>
 
@@ -92,7 +92,7 @@ export default function Header() {
         </Button>
         {currentUser && (
           <Link to='/createpost'>
-            <Button color='blue' className='hidden md:inline-flex'>
+            <Button  color='teal-500' className='hidden md:inline-flex text-white bg-teal-500'>
               Create Post
             </Button>
           </Link>
@@ -124,7 +124,7 @@ export default function Header() {
           </Dropdown>
         ) : (
           <Link to='/signin'>
-            <Button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+            <Button className="bg-gradient-to-r from-teal-600 via-teal-800 to-teal-300 text-white">
               Sign In
             </Button>
           </Link>

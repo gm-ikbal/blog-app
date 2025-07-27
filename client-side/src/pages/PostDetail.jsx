@@ -141,7 +141,7 @@ export default function PostDetail() {
             </div>
 
             <Link to={`/search?q=${encodeURIComponent(post.category)}`} className='self-center mt-5'>
-                <Button color='gray' pill size='xs'>
+                <Button color='teal-500' pill size='xs' className='text-white bg-teal-500'>
                     {post.category}
                 </Button>
             </Link>

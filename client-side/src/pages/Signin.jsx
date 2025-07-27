@@ -54,9 +54,10 @@ export default function Signin() {
             to="/"
             className="font-bold dark:text-white text-4xl"
           >
-            <span className="px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white">
-              Sign In
+            <span className="px-2 py-1  bg-gradient-to-r from-teal-600 via-teal-500 to-teal-400 rounded-lg text-black">
+              Sign
             </span>
+             in
           </Link>
           <p className="text-sm mt-5">
             This is a demo project. You can Sign In with your email and password.
@@ -91,7 +92,7 @@ export default function Signin() {
             <Button
               type="submit"
               disabled={loading}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 text-white "
+              className="bg-gradient-to-r from-teal-600 via-teal-800 to-teal-300 text-white "
             >
               {
                 loading ? (
@@ -107,7 +108,7 @@ export default function Signin() {
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span>Dont Have an Account?</span>
-            <Link to="/signup" className="text-blue-500">
+            <Link to="/signup" className="text-teal-500">
               Sign Up
             </Link>
           </div>

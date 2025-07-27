@@ -270,7 +270,7 @@ export default function Profile() {
                     value={formData.password}
                     onChange={handleChange}
                 />
-                <Button type='submit' className="bg-gradient-to-r from-purple-500 to-pink-500 text-white"> Update</Button>
+                <Button type='submit' className="bg-gradient-to-r from-teal-600 via-teal-800 to-teal-300 text-white"> Update</Button>
 
                 {currentUser?.isAdmin && (
                     <Link to={'/createpost'}>

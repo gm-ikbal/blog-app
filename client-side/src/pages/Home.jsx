@@ -55,7 +55,7 @@ export default function Home() {
     return (
         <div className='min-h-screen'>
             {/* Hero Section */}
-            <div className='bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20'>
+            <div className='bg-gradient-to-r from-teal-400 via-teal-700 to-teal-400 text-white py-20'>
                 <div className='max-w-6xl mx-auto px-4 text-center'>
                     <h1 className='text-5xl font-bold mb-6'>
                         Welcome to Our Blog
@@ -66,7 +66,7 @@ export default function Home() {
                     <div className='flex gap-4 justify-center'>
                         {currentUser ? (
                             <Link to='/createpost'>
-                                <Button size='lg' color='light'>
+                                <Button size='lg' color='teal-500'>
                                     Create Post
                                 </Button>
                             </Link>
@@ -77,11 +77,11 @@ export default function Home() {
                                 </Button>
                             </Link>
                         )}
-                        <Link to='/about'>
+                        {/* <Link to='/about'>
                             <Button size='lg' outline color='light'>
                                 Learn More
                             </Button>
-                        </Link>
+                        </Link> */}
                     </div>
                 </div>
             </div>
@@ -90,16 +90,16 @@ export default function Home() {
             <div className='max-w-6xl mx-auto px-4 py-16'>
                 <div className='flex justify-between items-center mb-12'>
                     <div>
-                        <h2 className='text-3xl font-bold text-gray-800 mb-2'>
+                        <h2 className='text-3xl font-bold text-gray-800 dark:text-gray-200 mb-2'>
                             Latest Articles
                         </h2>
-                        <p className='text-gray-600'>
+                        <p className='text-gray-500 dark:text-gray-400'>
                             Stay updated with our most recent posts and insights
                         </p>
                     </div>
                     <div className='flex gap-4 items-center'>
                         <Link to='/signup'>
-                            <Button color='blue' className='flex items-center gap-2'>
+                            <Button color='teal-500' className='flex items-center gap-2 bg-gradient-to-r from-teal-300 via-teal-700 to-teal-300 text-white'>
                                 Join Our Community
                                 <HiOutlineArrowRight size={16} />
                             </Button>
@@ -109,57 +109,55 @@ export default function Home() {
 
                 {posts.length === 0 ? (
                     <div className='text-center py-12'>
-                        <h3 className='text-xl text-gray-600 mb-4'>
+                        <h3 className='text-xl text-gray-600 dark:text-gray-400 mb-4'>
                             No posts available yet
                         </h3>
-                        <p className='text-gray-500'>
+                        <p className='text-gray-500 dark:text-gray-400'>
                             Be the first to create amazing content!
                         </p>
                     </div>
                 ) : (
-                    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-                        {posts.map((post) => (
-                            <PostCard key={post._id} post={post} />
-                        ))}
+                  
+                    <div className="grid grid-cols-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+                      {posts.map((post) => (
+                        <PostCard key={post._id} post={post} />
+                      ))}
                     </div>
+               
                 )}
             </div>
 
             {/* Call to Action Section */}
-            <div className='bg-gray-50 py-16'>
+            <div className='bg-gradient-to-r from-teal-400 via-teal-700 to-teal-400 text-white py-16'>
                 <div className='max-w-4xl mx-auto px-4 text-center'>
-                    <h2 className='text-3xl font-bold text-gray-800 mb-4'>
+                    <h2 className='text-3xl font-bold text-gray-400 dark:text-gray-200 mb-4'>
                         Ready to Share Your Story?
                     </h2>
-                    <p className='text-gray-600 mb-8 max-w-2xl mx-auto'>
+                    <p className='text-gray-500 dark:text-gray-400 mb-8 max-w-2xl mx-auto'>
                         Join our community of writers and developers. Share your knowledge, experiences, and insights with the world.
                     </p>
                     <div className='flex gap-4 justify-center'>
                         {currentUser ? (
                             <Link to='/createpost'>
-                                <Button size='lg' color='blue'>
+                                <Button size='lg' color='teal-500'>
                                     Create Post
                                 </Button>
                             </Link>
                         ) : (
                             <Link to='/signup'>
-                                <Button size='lg' color='blue'>
+                                <Button size='lg' color='light'>
                                     Start Writing
                                 </Button>
                             </Link>
                         )}
-                        <Link to='/signin'>
-                            <Button size='lg' outline color='blue'>
-                                Sign In
-                            </Button>
-                        </Link>
+                       
                     </div>
                 </div>
             </div>
 
             {/* Features Section */}
             <div className='max-w-6xl mx-auto px-4 py-16'>
-                <h2 className='text-3xl font-bold text-center text-gray-800 mb-12'>
+                <h2 className='text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-12'>
                     Why Choose Our Platform?
                 </h2>
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>

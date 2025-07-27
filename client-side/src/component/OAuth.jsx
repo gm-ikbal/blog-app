@@ -39,7 +39,7 @@ export default function OAuth() {
 <Button
   type="button"
  onClick={handleGoogleClick}
-  className="w-full flex items-center justify-center gap-2 border-2 bg-gradient-to-r from-white-500 to-black-500 text-grey-600"
+  className="w-full flex items-center justify-center gap-2 border-2  text-grey-600"
 >        
 <AiFillGoogleCircle className='w-6 h-6'/> 
 Continue with Google   

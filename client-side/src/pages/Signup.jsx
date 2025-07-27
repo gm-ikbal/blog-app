@@ -54,10 +54,12 @@ export default function Signup() {
             to="/"
             className="font-bold dark:text-white text-4xl"
           >
-            <span className="px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white">
-              Sign Up
+      <span className="px-2 py-1  bg-gradient-to-r from-teal-600 via-teal-500 to-teal-400 rounded-lg text-black">
+              Sign
             </span>
+             Up
           </Link>
+       
           <p className="text-sm mt-5">
             This is a demo project. You can sign up with your email and password.
           </p>
@@ -105,7 +107,7 @@ export default function Signup() {
             <Button
               type="submit"
               disabled={loading}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+              className="bg-gradient-to-r from-teal-600 via-teal-800 to-teal-300 text-white"
             >
               {
                 loading ? (
@@ -117,11 +119,11 @@ export default function Signup() {
                 ) : ("Sign Up")
               }
             </Button>
-            <OAuth/>
+            <OAuth/>  
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span>Already have an account?</span>
-            <Link to="/signin" className="text-blue-500">
+            <Link to="/signin" className="text-teal-500">
               Sign In
             </Link>
           </div>
