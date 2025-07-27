@@ -148,7 +148,7 @@ export default function Search() {
                                 <p className='text-gray-500 dark:text-gray-400 mb-4'>
                                     Try searching with different keywords
                                 </p>
-                                <Button color='blue' onClick={clearSearch}>
+                                <Button className='bg-teal-500 text-white' onClick={clearSearch}>
                                     Clear Search
                                 </Button>
                             </div>
