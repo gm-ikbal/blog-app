@@ -5,15 +5,19 @@ import {
   HiUser,
   HiArrowSmRight,
   HiDocumentText,
+  HiOutlineUserGroup,
 } from 'react-icons/hi';
 import { useDispatch, useSelector } from 'react-redux';
 import { signOutStart, signOutSuccess, signOutFailure } from '../redux/user/userSlice';
+import { getProfileImageUrlWithFallback, handleImageError } from '../utils/imageUtils';
 export default function SideBar() {
   const location = useLocation();
   const [tab, setTab] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
+
+
   const handleSignOut = async () => {
     dispatch(signOutStart())
     try {
@@ -39,6 +43,29 @@ export default function SideBar() {
 
   return (
    <Sidebar className="w-full md:w-56">
+      {/* User Profile Section */}
+      <div className="flex flex-col items-center p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="w-16 h-16 rounded-full overflow-hidden mb-3">
+          <img
+            src={getProfileImageUrlWithFallback(currentUser)}
+            alt="user"
+            className="w-full h-full object-cover"
+            onError={(e) => handleImageError(e, currentUser)}
+          />
+        </div>
+        <div className="text-center">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+            {currentUser?.username || 'User'}
+          </h3>
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            {currentUser?.email || 'user@example.com'}
+          </p>
+          <span className="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full mt-1">
+            {currentUser?.isAdmin ? 'Admin' : 'User'}
+          </span>
+        </div>
+      </div>
+      
       <SidebarItems>
         <SidebarItemGroup className='flex flex-col gap-1'>
           <SidebarItem
@@ -61,7 +88,16 @@ export default function SideBar() {
             Posts
           </SidebarItem>
           )}
-
+          {currentUser && currentUser.isAdmin && (
+            <SidebarItem
+              as={Link}
+              to="/dashboard?tab=users"
+              active={tab === 'users'}
+              icon={HiOutlineUserGroup}
+            >
+              Users
+            </SidebarItem>
+          )}
 
           <SidebarItem
             icon={HiArrowSmRight}

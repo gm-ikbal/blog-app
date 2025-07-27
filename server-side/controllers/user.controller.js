@@ -133,3 +133,26 @@ export const getUser = async (req, res, next) => {
 
 
 }
+
+export const makeAdmin = async (req, res, next) => {
+    if (!req.user.isAdmin) {
+        return next(errorHandler(403, 'You are not allowed to make admin'));
+    }
+    try {
+        await User.findByIdAndUpdate(req.params.userId, { isAdmin: true });
+        res.status(200).json('User has been made admin');
+    } catch (error) {
+        next(error);
+    }
+}
+export const deleteUser = async (req, res, next) => {
+    if (!req.user.isAdmin) {
+        return next(errorHandler(403, 'You are not allowed to delete user'));
+    }
+    try {
+        await User.findByIdAndDelete(req.params.currentUserId);
+        res.status(200).json('User has been deleted');
+    } catch (error) {
+        next(error);
+    }
+}

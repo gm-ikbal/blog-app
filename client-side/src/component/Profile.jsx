@@ -21,6 +21,7 @@ import { useDispatch } from 'react-redux';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { getProfileImageUrlWithFallback, handleImageError } from '../utils/imageUtils';
 
 export default function Profile() {
     const { currentUser } = useSelector((state) => state.user);
@@ -174,15 +175,7 @@ export default function Profile() {
         if (imageFileUrl) {
             return imageFileUrl;
         }
-        if (currentUser?._id) {
-            return `/image/profile/${currentUser._id}`;
-        }
-        return currentUser?.profilePicture || '';
-    };
-
-    const handleImageError = (e) => {
-        // Fallback to default profile picture if image fails to load
-        e.target.src = currentUser?.profilePicture || 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D';
+        return getProfileImageUrlWithFallback(currentUser);
     };
 
     const uploadImage = async () => {
@@ -247,7 +240,7 @@ export default function Profile() {
                         src={getProfileImageUrl()}
                         alt="user"
                         className='rounded-full w-full h-full object-cover border-8 border-[lightgray]'
-                        onError={handleImageError}
+                        onError={(e) => handleImageError(e, currentUser)}
                     />
                     {isUploading && (
                         <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">

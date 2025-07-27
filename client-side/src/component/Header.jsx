@@ -15,11 +15,14 @@ import { FaMoon } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
 import { toggleTheme } from '../redux/theme/themeSlice';
 import { signOutStart, signOutSuccess, signOutFailure } from '../redux/user/userSlice';
+import { getProfileImageUrlWithFallback, handleImageError } from '../utils/imageUtils';
 
 export default function Header() {
   const { currentUser } = useSelector(state => state.user)
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+
   const handleSignOut = async () => {
     dispatch(signOutStart())
     try {
@@ -67,8 +70,9 @@ export default function Header() {
             label={
               <Avatar
                 alt='useravatar'
-                img={currentUser.profilePicture}
-                rounded>
+                img={getProfileImageUrlWithFallback(currentUser)}
+                rounded
+                onError={(e) => handleImageError(e, currentUser)}>
               </Avatar>
             }
           >
