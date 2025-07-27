@@ -2,9 +2,6 @@ import Post from '../models/post.model.js'
 import { errorHandler } from '../Utils/error.js'
 
 export const createPost = async (req, res, next) => {
-    if (!req.user.isAdmin) {
-        return next(errorHandler(403, 'You are not allowed to create a post'));
-    }
     if (!req.body.title || !req.body.content) {
         return next(errorHandler(400, 'Please provide all required fields'));
     }
@@ -88,7 +85,8 @@ export const deletePost = async (req, res, next) => {
         if (!post) {
             return next(errorHandler(404, 'Post not found'));
         }
-        if (post.userId !== req.params.userid) {
+        // Allow post creator or admin to delete the post
+        if (post.userId !== req.user.id && !req.user.isAdmin) {
             return next(errorHandler(403, 'You are not allowed to delete this post'));
         }
         await Post.findByIdAndDelete(req.params.postid);
@@ -104,7 +102,8 @@ export const updatePost = async (req, res, next) => {
         if (!post) {
             return next(errorHandler(404, 'Post not found'));
         }
-        if (post.userId !== req.user.id) {
+        // Allow post creator or admin to update the post
+        if (post.userId !== req.user.id && !req.user.isAdmin) {
             return next(errorHandler(403, 'You are not allowed to update this post'));
         }
 
@@ -125,6 +124,59 @@ export const updatePost = async (req, res, next) => {
             success: true,
             message: 'Post updated successfully',
             post: updatedPost
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getPostBySlug = async (req, res, next) => {
+    try {
+        const post = await Post.findOne({ slug: req.params.slug });
+        if (!post) {
+            return next(errorHandler(404, 'Post not found'));
+        }
+        
+        res.status(200).json({
+            success: true,
+            post: post
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getRecentPosts = async (req, res, next) => {
+    try {
+        const limit = parseInt(req.query.limit) || 5;
+        const posts = await Post.find().sort({ createdAt: -1 }).limit(limit);
+        res.status(200).json({ success: true, posts: posts });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const searchPosts = async (req, res, next) => {
+    try {
+        const startIndex = parseInt(req.query.startIndex) || 0;
+        const limit = parseInt(req.query.limit) || 20;
+        const sortDirection = req.query.order === 'asc' ? 1 : -1;
+        
+        const posts = await Post.find({
+            ...(req.query.searchTerm && {
+                $or: [
+                    { title: { $regex: req.query.searchTerm, $options: 'i' } },
+                    { content: { $regex: req.query.searchTerm, $options: 'i' } },
+                ],
+            }),
+        })
+            .sort({ updatedAt: sortDirection })
+            .skip(startIndex)
+            .limit(limit);
+
+        res.status(200).json({
+            success: true,
+            posts,
         });
     } catch (error) {
         next(error);

@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Navbar, 
   NavbarLink, 
   NavbarCollapse, 
@@ -6,22 +7,33 @@ import { Navbar,
   Avatar,
   DropdownHeader, 
   DropdownDivider, 
-  DropdownItem } from 'flowbite-react';
+  DropdownItem,
+  TextInput } from 'flowbite-react';
 import { Link, useNavigate } from 'react-router-dom'
-import { TextInput } from 'flowbite-react'
-import { AiOutlineSearch } from 'react-icons/ai'
 import { Button } from 'flowbite-react'
 import { FaMoon } from 'react-icons/fa'
+import { AiOutlineSearch } from 'react-icons/ai'
+
 import { useDispatch, useSelector } from 'react-redux'
-import { toggleTheme } from '../redux/theme/themeSlice';
+
 import { signOutStart, signOutSuccess, signOutFailure } from '../redux/user/userSlice';
 import { getProfileImageUrlWithFallback, handleImageError } from '../utils/imageUtils';
 
 export default function Header() {
+  const location = useLocation();
   const { currentUser } = useSelector(state => state.user)
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
 
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const search = searchParams.get('search');
+    if (search) {
+      setSearchTerm(search);
+    }
+  }, [location.search]);
 
   const handleSignOut = async () => {
     dispatch(signOutStart())
@@ -37,7 +49,15 @@ export default function Header() {
     catch (error) {
         dispatch(signOutFailure(error))
     }
-}
+  }
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
+    }
+  };
+
   return (
     <div className="!bg-white">
       <Navbar
@@ -52,18 +72,32 @@ export default function Header() {
           </span>
 
         </Link>
-
-        <form>
+        <form onSubmit={handleSearch} className='hidden lg:block'>
           <TextInput
             type='text'
-            placeholder='Search...'
+            placeholder='Search posts...'
             rightIcon={AiOutlineSearch}
-            className='hidden lg:inline'
+            className='w-64'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </form>
-        <Button className='lg:hidden w-12 h-10' color='gray' pill>
+        <Button 
+          className='lg:hidden w-12 h-10' 
+          color='gray' 
+          pill
+          onClick={handleSearch}
+        >
           <AiOutlineSearch />
         </Button>
+        {currentUser && (
+          <Link to='/createpost'>
+            <Button color='blue' className='hidden md:inline-flex'>
+              Create Post
+            </Button>
+          </Link>
+        )}
+        
         {currentUser ? (
           <Dropdown
             arrowIcon={false}
@@ -101,10 +135,7 @@ export default function Header() {
           onClick={()=> dispatch(toggleTheme())}>
       <FaMoon/>
     </Button>
-
-
         </div> */}
-       
       </Navbar>
     </div>
   )

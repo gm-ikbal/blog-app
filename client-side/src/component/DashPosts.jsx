@@ -16,7 +16,12 @@ export default function DashPosts() {
     const handleShowMore = async () => {
         const startIndex = userPosts.length;
         try {
-            const res = await fetch(`/post/getposts?userId=${currentUser._id}&skip=${startIndex}`);
+            // For admins, fetch all posts; for regular users, fetch only their posts
+            const url = currentUser.isAdmin 
+                ? `/post/getposts?skip=${startIndex}`
+                : `/post/getposts?userId=${currentUser._id}&skip=${startIndex}`;
+            
+            const res = await fetch(url);
             const data = await res.json();
             if (res.ok) {
                 setUserPosts([...userPosts, ...data.posts]);
@@ -28,7 +33,7 @@ export default function DashPosts() {
 
     const handleDeletePost = async () => {
         try {
-            const res = await fetch(`/post/deletepost/${postIdToDelete}/${currentUser._id}`, {
+            const res = await fetch(`/post/deletepost/${postIdToDelete}`, {
                 method: 'DELETE'
             });
             const data = await res.json();
@@ -42,6 +47,10 @@ export default function DashPosts() {
         }
     }
 
+    // Check if user can edit/delete a specific post
+    const canEditPost = (post) => {
+        return currentUser && (currentUser._id === post.userId || currentUser.isAdmin);
+    };
 
     const isValidImageData = (imageData) => {
         if (!imageData) return false;
@@ -51,16 +60,23 @@ export default function DashPosts() {
         if (imageData.startsWith('/uploads/')) return true;
         return false;
     };
+    
     const getImageSrc = (post) => {
         if (isValidImageData(post.image)) {
             return post.image;
         }
         return 'https://www.hostinger.com/tutorials/wp-content/uploads/sites/2/2021/09/how-to-write-a-blog-post.png';
     };
+    
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const res = await fetch(`/post/getposts?userId=${currentUser._id}`);
+                // For admins, fetch all posts; for regular users, fetch only their posts
+                const url = currentUser.isAdmin 
+                    ? '/post/getposts'
+                    : `/post/getposts?userId=${currentUser._id}`;
+                
+                const res = await fetch(url);
                 const data = await res.json();
                 if (res.ok) {
                     setUserPosts(data.posts);
@@ -72,14 +88,14 @@ export default function DashPosts() {
                 console.log(error.message);
             }
         };
-        if (currentUser.isAdmin) {
+        if (currentUser) {
             fetchPosts();
         }
-    }, [currentUser._id]);
+    }, [currentUser._id, currentUser.isAdmin]);
 
     return (
         <div className='table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
-            {currentUser.isAdmin && userPosts.length > 0 ? (
+            {currentUser && userPosts.length > 0 ? (
                 <>
                     <Table hoverable className='shadow-md w-full'>
                         <TableHead>
@@ -87,6 +103,7 @@ export default function DashPosts() {
                             <TableHeadCell>Post image</TableHeadCell>
                             <TableHeadCell>Post title</TableHeadCell>
                             <TableHeadCell>Category</TableHeadCell>
+                            {currentUser.isAdmin && <TableHeadCell>Author</TableHeadCell>}
                             <TableHeadCell>Delete</TableHeadCell>
                             <TableHeadCell>
                                 <span>Edit</span>
@@ -102,27 +119,41 @@ export default function DashPosts() {
                                             <img src={getImageSrc(post)}
                                                 alt={post.title}
                                                 className='w-20 h-20 object-cover bg-gray-500'
-                                            
-                         />
+                                            />
                                         </Link>
                                     </TableCell>
-                                    <TableCell className='font-medium text-gray-500 dark:text-gray-300'> <Link to={`/post/${post.slug}`} className='hover:underline'>{post.title}</Link></TableCell>
+                                    <TableCell className='font-medium text-gray-500 dark:text-gray-300'> 
+                                        <Link to={`/post/${post.slug}`} className='hover:underline'>{post.title}</Link>
+                                    </TableCell>
                                     <TableCell className='font-medium text-gray-500 dark:text-gray-300'>{post.category}</TableCell>
+                                    {currentUser.isAdmin && (
+                                        <TableCell className='font-medium text-gray-500 dark:text-gray-300'>
+                                            {post.userId === currentUser._id ? 'You' : 'Other User'}
+                                        </TableCell>
+                                    )}
                                     <TableCell>
-                                        <span className='font-medium text-red-500 hover:underline cursor-pointer'
-                                            onClick={() => {
-                                                setShowDeleteModal(true);
-                                                setPostIdToDelete(post._id);
-                                            }}>
-                                            Delete
-                                        </span>
+                                        {canEditPost(post) ? (
+                                            <span className='font-medium text-red-500 hover:underline cursor-pointer'
+                                                onClick={() => {
+                                                    setShowDeleteModal(true);
+                                                    setPostIdToDelete(post._id);
+                                                }}>
+                                                Delete
+                                            </span>
+                                        ) : (
+                                            <span className='text-gray-400'>-</span>
+                                        )}
                                     </TableCell>
                                     <TableCell>
-                                        <Link to={`/update-post/${post._id}`}>
-                                            <span className='text-teal-600 hover:underline cursor-pointer'>
-                                                Edit
-                                            </span>
-                                        </Link>
+                                        {canEditPost(post) ? (
+                                            <Link to={`/update-post/${post._id}`}>
+                                                <span className='text-teal-600 hover:underline cursor-pointer'>
+                                                    Edit
+                                                </span>
+                                            </Link>
+                                        ) : (
+                                            <span className='text-gray-400'>-</span>
+                                        )}
                                     </TableCell>
                                 </TableRow>
                             </TableBody>

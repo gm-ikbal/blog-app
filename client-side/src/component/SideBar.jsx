@@ -6,6 +6,7 @@ import {
   HiArrowSmRight,
   HiDocumentText,
   HiOutlineUserGroup,
+  HiPlus,
 } from 'react-icons/hi';
 import { useDispatch, useSelector } from 'react-redux';
 import { signOutStart, signOutSuccess, signOutFailure } from '../redux/user/userSlice';
@@ -78,16 +79,24 @@ export default function SideBar() {
           >
             Profile
           </SidebarItem>
-          {currentUser && currentUser.isAdmin && (
+          
+          <SidebarItem
+            as={Link}
+            to="/createpost"
+            icon={HiPlus}
+          >
+            Create Post
+          </SidebarItem>
+          
           <SidebarItem
             as={Link}
             to="/dashboard?tab=posts"
             active={tab === 'posts'}
             icon={HiDocumentText}
           >
-            Posts
+            My Posts
           </SidebarItem>
-          )}
+          
           {currentUser && currentUser.isAdmin && (
             <SidebarItem
               as={Link}

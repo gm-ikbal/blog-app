@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Select, TextInput, FileInput, Button, Alert, Spinner } from 'flowbite-react'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
@@ -11,6 +11,7 @@ import { useParams } from 'react-router-dom';
 
 export default function UpdatedPost() {
     const { postid } = useParams();
+    const { currentUser } = useSelector((state) => state.user);
     const [formData, setFormData] = useState({
         title: '',
         category: '',
@@ -46,6 +47,16 @@ export default function UpdatedPost() {
                 }
                 if (data.posts && data.posts.length > 0) {
                     const post = data.posts[0];
+                    
+                    // Check if user has permission to edit this post
+                    if (post.userId !== currentUser._id && !currentUser.isAdmin) {
+                        setPublishError('You are not authorized to edit this post');
+                        setTimeout(() => {
+                            navigate('/dashboard');
+                        }, 2000);
+                        return;
+                    }
+                    
                     setFormData({
                         title: post.title,
                         category: post.category,
@@ -63,10 +74,10 @@ export default function UpdatedPost() {
             }
         };
 
-        if (postid) {
+        if (postid && currentUser) {
             fetchPost();
         }
-    }, [postid]);
+    }, [postid, currentUser, navigate]);
 
 
 
