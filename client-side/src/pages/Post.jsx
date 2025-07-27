@@ -31,15 +31,21 @@ export default function Post() {
     const handlePublish = async (e) => {
       e.preventDefault();
       setIsLoading(true);
-      try {
-        const res = await fetch('/post/createpost', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
-                 const data = await res.json();
+              try {
+            console.log('Submitting form data:', {
+                title: formData.title,
+                category: formData.category,
+                imageLength: formData.image ? formData.image.length : 'No image',
+                contentLength: formData.content ? formData.content.length : 'No content'
+            });
+            const res = await fetch('/post/createpost', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+        const data = await res.json();
          console.log('Response data:', data);
          console.log('Post slug:', data.post?.slug);
          if (!res.ok) {
@@ -133,6 +139,8 @@ export default function Post() {
             
             if (data.success) {
                 setImageUploadProgress(100);
+                console.log('Image URL length:', data.imageUrl ? data.imageUrl.length : 'No URL');
+                console.log('Image URL preview:', data.imageUrl ? data.imageUrl.substring(0, 100) + '...' : 'No URL');
                 setFormData(prev => ({
                     ...prev,
                     image: data.imageUrl
@@ -247,6 +255,10 @@ export default function Post() {
                   src={formData.image}
                   alt='upload'
                   className='w-full h-72 object-cover rounded-lg'
+                  onError={(e) => {
+                    console.error('Image failed to load in preview');
+                    e.target.style.display = 'none';
+                  }}
                 />
                 <Button
                   type='button'

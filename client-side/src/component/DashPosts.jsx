@@ -1,9 +1,116 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useSelector } from 'react-redux';
+import { useState } from 'react';
+
+import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from 'flowbite-react';
+import { Link } from 'react-router-dom';
 
 export default function DashPosts() {
-  return (
-    <div>
-      <h1>Posts</h1>
-    </div>
-  )
+    const { currentUser } = useSelector((state) => state.user);
+    const [userPosts, setUserPosts] = useState([]);
+    const [showMore, setShowMore] = useState(true);
+    
+    const isValidImageData = (imageData) => {
+        if (!imageData) return false;
+        if (typeof imageData !== 'string') return false;
+        if (imageData.startsWith('data:image/')) return true;
+        if (imageData.startsWith('http')) return true;
+        if (imageData.startsWith('/uploads/')) return true;
+        return false;
+    };
+
+    const getImageSrc = (post) => {
+        console.log('Checking image for post:', post.title);
+        console.log('Image data:', post.image);
+        console.log('Is valid image data:', isValidImageData(post.image));
+        
+        if (isValidImageData(post.image)) {
+            return post.image;
+        }
+        return 'https://www.hostinger.com/tutorials/wp-content/uploads/sites/2/2021/09/how-to-write-a-blog-post.png';
+    };
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                const res = await fetch(`/post/getposts?userId=${currentUser._id}`);
+                const data = await res.json();
+                if (res.ok) {
+                    console.log('Posts data:', data.posts);
+                    data.posts.forEach(post => {
+                        console.log(`Post "${post.title}" image:`, post.image ? post.image.substring(0, 50) + '...' : 'No image');
+                    });
+                    setUserPosts(data.posts);
+                    if (data.posts.length < 9) {
+                        setShowMore(false);
+                    }
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
+        };
+        if (currentUser.isAdmin) {
+            fetchPosts();
+        }
+    }, [currentUser._id]);
+
+    return (
+        <div className='table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
+            {currentUser.isAdmin && userPosts.length > 0 ? (
+                <>
+                    <Table hoverable className='shadow-md w-full'> 
+                        <TableHead>
+                            <TableHeadCell>Date updated</TableHeadCell>
+                            <TableHeadCell>Post image</TableHeadCell>
+                            <TableHeadCell>Post title</TableHeadCell>
+                            <TableHeadCell>Category</TableHeadCell>
+                            <TableHeadCell>Delete</TableHeadCell>
+                            <TableHeadCell>
+                                <span>Edit</span>
+                            </TableHeadCell>
+                        </TableHead>
+
+                        {userPosts.map((post) => (
+                        <TableBody key={post._id} className='divide-y'>
+                            <TableRow>
+                                <TableCell>{new Date(post.updatedAt).toLocaleDateString()}</TableCell>
+                                <TableCell>
+                                    <Link to={`/post/${post.slug}`}>
+                                        <img src={getImageSrc(post)} 
+                                        alt={post.title} 
+                                        className='w-20 h-20 object-cover bg-gray-500'
+                                        onError={(e) => {
+                                            console.error('Image failed to load for post:', post.title);
+                                            console.error('Image data length:', post.image ? post.image.length : 'No image');
+                                            console.error('Image data starts with:', post.image ? post.image.substring(0, 50) : 'No image');
+                                            console.error('Is valid base64:', post.image ? post.image.startsWith('data:image/') : false);
+                                            console.error('Is valid image data:', isValidImageData(post.image));
+                                            e.target.src = 'https://www.hostinger.com/tutorials/wp-content/uploads/sites/2/2021/09/how-to-write-a-blog-post.png';
+                                        }}
+                                        onLoad={() => console.log('Image loaded successfully:', post.title)}/>
+                                    </Link>
+                                </TableCell>
+                                <TableCell className='font-medium text-gray-500 dark:text-gray-300'>{post.title}</TableCell>
+                                <TableCell className='font-medium text-gray-500 dark:text-gray-300'>{post.category}</TableCell>
+                                <TableCell>
+                                    <span className='font-medium text-red-500 hover:underline cursor-pointer'>
+                                        Delete
+                                    </span>
+                                </TableCell>
+                                <TableCell>
+                                    <Link to={`/update-post/${post._id}`}>
+                                        <span className='text-teal-600 hover:underline cursor-pointer'>
+                                            Edit
+                                        </span>
+                                    </Link>
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                        ))}
+
+                    </Table>
+                </>) : (
+                <p className='text-center text-gray-500'>No posts found</p>
+            )}
+        </div>
+    )
 }
