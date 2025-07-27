@@ -148,14 +148,21 @@ export default function DashUsers() {
                                     <TableCell className='font-medium text-gray-500 dark:text-gray-300'>{user.email}</TableCell>
                                     <TableCell className='font-medium text-gray-500 dark:text-gray-300'>{user.isAdmin ? <FaCheck className='text-green-500' /> : <FaTimes className='text-red-500' />}</TableCell>
                                     <TableCell>
-                                        <span className='font-medium text-red-500 hover:underline cursor-pointer'
-                                            onClick={() => {
-                                                setShowDeleteModal(true);
-                                                setUserIdToDelete(user._id);
-                                            }}>
-                                            Delete
-                                        </span>
+                                        {user._id !== currentUser._id ? (
+                                            <span className='font-medium text-red-500 hover:underline cursor-pointer'
+                                                onClick={() => {
+                                                    setShowDeleteModal(true);
+                                                    setUserIdToDelete(user._id);
+                                                }}>
+                                                Delete
+                                            </span>
+                                        ) : (
+                                            <span className='font-medium text-gray-400 cursor-not-allowed'>
+                                         Delete
+                                            </span>
+                                        )}
                                     </TableCell>
+                                  
                                     <TableCell>
                                         {!user.isAdmin && (
                                             <span className='font-medium text-teal-500 hover:underline cursor-pointer'
