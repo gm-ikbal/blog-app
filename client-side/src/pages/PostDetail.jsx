@@ -19,8 +19,7 @@ export default function PostDetail() {
     const { currentUser } = useSelector((state) => state.user);
     const [recentPosts, setRecentPosts] = useState([]);
 
-    // Check if current user can edit/delete this post
-    const canEditPost = currentUser && (currentUser._id === post?.userId || currentUser.isAdmin);
+
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -44,7 +43,7 @@ export default function PostDetail() {
 
         const fetchRecentPosts = async () => {
             try {
-                const res = await fetch('/post/recent?limit=5');
+                const res = await fetch('/post/recent?limit=6');
                 const data = await res.json();
                 if (res.ok) {
                     setRecentPosts(data.posts);
@@ -119,7 +118,7 @@ export default function PostDetail() {
                 <h1 className='text-3xl font-serif lg:text-4xl flex-1'>
                     {post.title}
                 </h1>
-                {canEditPost && (
+                {/* {canEditPost && (
                     <div className='flex gap-2 ml-4'>
                         <Link to={`/update-post/${post._id}`}>
                             <Button size='sm' color='gray' className='flex items-center gap-1'>
@@ -127,17 +126,19 @@ export default function PostDetail() {
                                 Edit
                             </Button>
                         </Link>
-                        <Button 
-                            size='sm' 
-                            color='failure' 
-                            className='flex items-center gap-1'
-                            onClick={() => setShowDeleteModal(true)}
-                        >
-                            <HiOutlineTrash size={16} />
-                            Delete
-                        </Button>
+                        {canDeletePost && (
+                            <Button 
+                                size='sm' 
+                                color='failure' 
+                                className='flex items-center gap-1'
+                                onClick={() => setShowDeleteModal(true)}
+                            >
+                                <HiOutlineTrash size={16} />
+                                Delete
+                            </Button>
+                        )}
                     </div>
-                )}
+                )} */}
             </div>
 
             <Link to={`/search?q=${encodeURIComponent(post.category)}`} className='self-center mt-5'>
@@ -157,7 +158,7 @@ export default function PostDetail() {
                 </span>
             </div>
             <div
-                className='p-3 max-w-2xl mx-auto w-full post-content'
+                className='p-3 max-w-2xl mx-auto w-full post-content text-gray-200'
                 dangerouslySetInnerHTML={{ __html: post.content }}
             ></div>
             <div className='max-w-4xl mx-auto w-full'>
@@ -166,9 +167,9 @@ export default function PostDetail() {
             <CommentSection postId={post._id} />
 
             {recentPosts.length > 0 && (
-                <div className='flex flex-col justify-center items-center mb-5'>
-                    <h1 className='text-xl mt-5'>Recent articles</h1>
-                    <div className='flex flex-wrap gap-5 mt-5 justify-center'>
+                <div className='flex flex-col  items-center mb-5'>
+                    <h1 className='text-xl mt-5 text-white'>Recent articles</h1>
+                    <div className='grid grid-cols-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6'>
                         {recentPosts.map((post) => <PostCard key={post._id} post={post} />)}
                     </div>
                 </div>
@@ -179,8 +180,8 @@ export default function PostDetail() {
                 <Modal.Header>Delete Post</Modal.Header>
                 <Modal.Body>
                     <div className="space-y-6">
-                        <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                            Are you sure you want to delete this post? This action cannot be undone.
+                        <p className="text-white leading-relaxed text-white text-white">
+                            Are you sure you want to delete this post?
                         </p>
                     </div>
                 </Modal.Body>
@@ -192,7 +193,7 @@ export default function PostDetail() {
                     >
                         {isDeleting ? <Spinner size="sm" /> : 'Delete'}
                     </Button>
-                    <Button color="gray" onClick={() => setShowDeleteModal(false)}>
+                    <Button color="light" onClick={() => setShowDeleteModal(false)}>
                         Cancel
                     </Button>
                 </Modal.Footer>

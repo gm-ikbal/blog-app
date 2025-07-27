@@ -157,7 +157,7 @@ export default function Comment({ comment, onCommentUpdate, onCommentDelete }) {
                         </div>
                     </div>
                 ) : (
-                    <p className='text-gray-800 mb-2'>{comment.content}</p>
+                    <p className='text-gray-200 mb-2'>{comment.content}</p>
                 )}
                 
                 {error && <Alert color='failure' className='mb-2'>{error}</Alert>}

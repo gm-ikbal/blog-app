@@ -87,16 +87,16 @@ export default function Search() {
                             />
                             <Button 
                                 type='submit'
-                                color='blue' 
+                      
                                 disabled={loading}
-                                className='flex items-center gap-2'
+                                className='flex items-center gap-2 bg-teal-500 text-white'
                             >
                                 <HiOutlineSearch size={16} />
                                 {loading ? 'Searching...' : 'Search'}
                             </Button>
                             {searchTerm && (
                                 <Button 
-                                    color='gray' 
+                                    color='dark' 
                                     outline 
                                     onClick={clearSearch}
                                 >

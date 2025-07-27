@@ -282,7 +282,7 @@ export default function UpdatedPost() {
                             outline
                             onClick={handleUploadImage}
                             disabled={isUploading || !file}
-                            className='bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                            className='text-white bg-teal-500'
                         >
                             {imageUploadProgress > 0 ? (
                                 <div className='w-16 h-16'>
@@ -357,11 +357,11 @@ export default function UpdatedPost() {
 
                     />
                     {isLoading ? (
-                        <Button type='submit' className="bg-gradient-to-r from-purple-500 to-pink-500 text-white" disabled={isUploading}>
+                        <Button type='submit' className="bg-gradient-to-r from-teal-600 via-teal-800 to-teal-300 text-white" disabled={isUploading}>
                             <Spinner />
                         </Button>
                     ) : (
-                        <Button type='submit' className="bg-gradient-to-r from-purple-500 to-pink-500 text-white" disabled={isUploading}>
+                        <Button type='submit' className="bg-teal-500 text-white" disabled={isUploading}>
                             Update Post
                         </Button>
                     )}
