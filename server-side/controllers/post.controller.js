@@ -80,3 +80,20 @@ export const getposts = async (req, res, next) => {
         next(error);
     }
 };
+
+
+export const deletePost = async (req, res, next) => {
+    try {
+        const post = await Post.findById(req.params.postid);
+        if (!post) {
+            return next(errorHandler(404, 'Post not found'));
+        }
+        if (post.userId !== req.params.userid) {
+            return next(errorHandler(403, 'You are not allowed to delete this post'));
+        }
+        await Post.findByIdAndDelete(req.params.postid);
+        res.status(200).json({ message: 'Post deleted successfully' });
+    } catch (error) {
+        next(error);
+    }
+}
