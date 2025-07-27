@@ -11,8 +11,10 @@ import FooterCom from './component/FooterCom';
 import Dashboard from './pages/Dashboard';
 import PrivateRoute from './component/PrivateRoute';
 import Post from './pages/Post';
+import UpdatedPost from './pages/UpdatedPost';
 import PostDetail from './pages/PostDetail';
 import OnlyAdminPrivateRoute from './component/onlyAdminRoutes';
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -29,6 +31,7 @@ export default function App() {
             <Route path="/post/:slug" element={<PostDetail />} />
             <Route element={<OnlyAdminPrivateRoute />}>
               <Route path="/createpost" element={<Post />} />
+              <Route path="/update-post/:postid" element={<UpdatedPost />} />
             </Route>
             <Route element={<PrivateRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />

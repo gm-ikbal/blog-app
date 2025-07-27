@@ -56,7 +56,7 @@ export const getposts = async (req, res, next) => {
             .sort({ updatedAt: sortDirection })
             .skip(startIndex)
             .limit(limit);
-            
+
         console.log('Retrieved posts count:', posts.length);
         posts.forEach(post => {
             console.log(`Post "${post.title}" image length:`, post.image ? post.image.length : 'No image');
@@ -93,6 +93,39 @@ export const deletePost = async (req, res, next) => {
         }
         await Post.findByIdAndDelete(req.params.postid);
         res.status(200).json({ message: 'Post deleted successfully' });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const updatePost = async (req, res, next) => {
+    try {
+        const post = await Post.findById(req.params.postid);
+        if (!post) {
+            return next(errorHandler(404, 'Post not found'));
+        }
+        if (post.userId !== req.user.id) {
+            return next(errorHandler(403, 'You are not allowed to update this post'));
+        }
+
+        const updatedPost = await Post.findByIdAndUpdate(
+            req.params.postid,
+            {
+                $set: {
+                    title: req.body.title,
+                    content: req.body.content,
+                    category: req.body.category,
+                    image: req.body.image,
+                }
+            },
+            { new: true }
+        );
+
+        res.status(200).json({
+            success: true,
+            message: 'Post updated successfully',
+            post: updatedPost
+        });
     } catch (error) {
         next(error);
     }
