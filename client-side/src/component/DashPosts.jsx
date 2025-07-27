@@ -10,6 +10,20 @@ export default function DashPosts() {
     const [userPosts, setUserPosts] = useState([]);
     const [showMore, setShowMore] = useState(true);
     
+
+    const handleShowMore = async () => {
+        const startIndex = userPosts.length;
+       try{
+        const res = await fetch(`/post/getposts?userId=${currentUser._id}&skip=${startIndex}`);
+        const data = await res.json();
+        if (res.ok) {
+            setUserPosts([...userPosts, ...data.posts]);
+        }
+       } catch (error) {
+        console.log(error.message);
+       }
+    }
+
     const isValidImageData = (imageData) => {
         if (!imageData) return false;
         if (typeof imageData !== 'string') return false;
@@ -18,12 +32,7 @@ export default function DashPosts() {
         if (imageData.startsWith('/uploads/')) return true;
         return false;
     };
-
     const getImageSrc = (post) => {
-        console.log('Checking image for post:', post.title);
-        console.log('Image data:', post.image);
-        console.log('Is valid image data:', isValidImageData(post.image));
-        
         if (isValidImageData(post.image)) {
             return post.image;
         }
@@ -35,10 +44,6 @@ export default function DashPosts() {
                 const res = await fetch(`/post/getposts?userId=${currentUser._id}`);
                 const data = await res.json();
                 if (res.ok) {
-                    console.log('Posts data:', data.posts);
-                    data.posts.forEach(post => {
-                        console.log(`Post "${post.title}" image:`, post.image ? post.image.substring(0, 50) + '...' : 'No image');
-                    });
                     setUserPosts(data.posts);
                     if (data.posts.length < 9) {
                         setShowMore(false);
@@ -108,8 +113,16 @@ export default function DashPosts() {
                         ))}
 
                     </Table>
+
+                    {showMore && (
+                        
+                            <button onClick={handleShowMore}  className='w-full text-teal-500 self-center text-sm py-7'>
+                                Show More
+                            </button>
+                        
+                    )}
                 </>) : (
-                <p className='text-center text-gray-500'>No posts found</p>
+                <p className='text-center text-gray-500'>You have no posts yet</p>
             )}
         </div>
     )
