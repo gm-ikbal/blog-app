@@ -104,13 +104,10 @@ export const getUser = async (req, res, next) => {
             .sort({ updatedAt: sortDirection })
             .skip(startIndex)
             .limit(limit);
-
         const userWithoutPassword = users.map(user => {
             const { password, ...rest } = user._doc;
             return rest;
         });
-
-
         const totalUsers = await User.countDocuments();
         const now = new Date();
         const oneMonthAgo = new Date(
@@ -130,8 +127,6 @@ export const getUser = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-
-
 }
 
 export const makeAdmin = async (req, res, next) => {

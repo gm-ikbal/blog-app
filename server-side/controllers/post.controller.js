@@ -18,9 +18,6 @@ export const createPost = async (req, res, next) => {
     });
     try {
         const savedPost = await newPost.save();
-        console.log('Saved post:', savedPost);
-        console.log('Post slug:', savedPost.slug);
-        console.log('Post image length:', savedPost.image ? savedPost.image.length : 'No image');
         res.status(201).json({
             success: true,
             message: 'Post created successfully',
@@ -53,7 +50,6 @@ export const getposts = async (req, res, next) => {
             .sort({ updatedAt: sortDirection })
             .skip(startIndex)
             .limit(limit);
-
         const totalPosts = await Post.countDocuments();
         const now = new Date();
         const oneMonthAgo = new Date(
