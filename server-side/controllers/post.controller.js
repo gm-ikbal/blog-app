@@ -145,7 +145,6 @@ export const getPostBySlug = async (req, res, next) => {
         next(error);
     }
 }
-
 export const getRecentPosts = async (req, res, next) => {
     try {
         const limit = parseInt(req.query.limit) || 5;
@@ -155,7 +154,6 @@ export const getRecentPosts = async (req, res, next) => {
         next(error);
     }
 }
-
 export const searchPosts = async (req, res, next) => {
     try {
         const startIndex = parseInt(req.query.startIndex) || 0;
@@ -173,7 +171,6 @@ export const searchPosts = async (req, res, next) => {
             .sort({ updatedAt: sortDirection })
             .skip(startIndex)
             .limit(limit);
-
         res.status(200).json({
             success: true,
             posts,

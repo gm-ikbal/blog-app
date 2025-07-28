@@ -15,7 +15,7 @@ export default function Home() {
         const fetchPosts = async () => {
             try {
                 setLoading(true);
-                const res = await fetch('/post/recent?limit=9');
+                const res = await fetch('/post/recent?limit=6');
                 const data = await res.json();
                 
                 if (res.ok) {

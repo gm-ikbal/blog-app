@@ -24,7 +24,7 @@ export default function Search() {
             setPosts([]);
             return;
         }
-
+        
         try {
             setLoading(true);
             setError(null);
@@ -43,7 +43,6 @@ export default function Search() {
             setLoading(false);
         }
     };
-
     const handleSubmit = (e) => {
         e.preventDefault();
         if (searchTerm.trim()) {
