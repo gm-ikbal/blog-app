@@ -4,11 +4,11 @@ import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
 import themeReducer from './theme/themeSlice'
 
-// Create separate persist configs for each reducer
+
 const userPersistConfig = {
   key: 'user',
   storage,
-  whitelist: ['currentUser'], // Only persist currentUser, not error or loading states
+  whitelist: ['currentUser'],
 };
 
 const themePersistConfig = {
@@ -25,7 +25,7 @@ const persistConfig = {
   key: 'root',
   storage,
   version: 1,
-  blacklist: ['user', 'theme'], // Don't persist the root level since we're persisting individual reducers
+  blacklist: ['user', 'theme'], 
 };
 
 export const store = configureStore({

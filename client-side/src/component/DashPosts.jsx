@@ -14,13 +14,12 @@ export default function DashPosts() {
     const [postIdToDelete, setPostIdToDelete] = useState(null);
 
     const handleShowMore = async () => {
+
         const startIndex = userPosts.length;
         try {
-            // For admins, fetch all posts; for regular users, fetch only their posts
             const url = currentUser.isAdmin 
                 ? `/post/getposts?skip=${startIndex}`
                 : `/post/getposts?userId=${currentUser._id}&skip=${startIndex}`;
-            
             const res = await fetch(url);
             const data = await res.json();
             if (res.ok) {
@@ -71,7 +70,6 @@ export default function DashPosts() {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                // For admins, fetch all posts; for regular users, fetch only their posts
                 const url = currentUser.isAdmin 
                     ? '/post/getposts'
                     : `/post/getposts?userId=${currentUser._id}`;

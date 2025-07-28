@@ -54,10 +54,6 @@ export const getposts = async (req, res, next) => {
             .skip(startIndex)
             .limit(limit);
 
-        console.log('Retrieved posts count:', posts.length);
-        posts.forEach(post => {
-            console.log(`Post "${post.title}" image length:`, post.image ? post.image.length : 'No image');
-        });
         const totalPosts = await Post.countDocuments();
         const now = new Date();
         const oneMonthAgo = new Date(
@@ -154,6 +150,7 @@ export const getRecentPosts = async (req, res, next) => {
         next(error);
     }
 }
+
 export const searchPosts = async (req, res, next) => {
     try {
         const startIndex = parseInt(req.query.startIndex) || 0;

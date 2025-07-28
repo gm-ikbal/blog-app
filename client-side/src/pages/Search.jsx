@@ -5,6 +5,7 @@ import PostCard from '../component/PostCard';
 import { HiOutlineSearch, HiOutlineArrowLeft } from 'react-icons/hi';
 
 export default function Search() {
+
     const [searchParams, setSearchParams] = useSearchParams();
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -37,12 +38,12 @@ export default function Search() {
                 setError('Failed to search posts');
             }
         } catch (error) {
-            console.error('Error searching posts:', error);
             setError('Something went wrong');
         } finally {
             setLoading(false);
         }
     };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (searchTerm.trim()) {
@@ -86,7 +87,6 @@ export default function Search() {
                             />
                             <Button 
                                 type='submit'
-                      
                                 disabled={loading}
                                 className='flex items-center gap-2 bg-teal-500 text-white'
                             >

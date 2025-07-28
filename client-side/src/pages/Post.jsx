@@ -58,7 +58,6 @@ export default function Post() {
         if (data.post && data.post.slug) {
           navigate(`/post/${data.post.slug}`);
         } else if (data.post && data.post._id) {
-          // Fallback to using post ID if slug is not available
           navigate(`/post/${data.post._id}`);
         } else {
           console.error('No slug or ID found in response:', data);
@@ -76,14 +75,12 @@ export default function Post() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Check file size (10MB limit)
       if (file.size > 10 * 1024 * 1024) {
         setImageUploadError('File size must be less than 10MB');
         setFile(null);
         return;
       }
 
-      // Check file type
       if (!file.type.startsWith('image/')) {
         setImageUploadError('Please select an image file');
         setFile(null);
@@ -109,7 +106,6 @@ export default function Post() {
     formData.append('image', file);
 
     try {
-      // Simulate progress for better UX
       const progressInterval = setInterval(() => {
         setImageUploadProgress(prev => {
           if (prev >= 90) {
@@ -124,9 +120,7 @@ export default function Post() {
         method: 'POST',
         body: formData,
       });
-
       clearInterval(progressInterval);
-
       if (!res.ok) {
         const errorText = await res.text();
         console.error('Upload failed:', errorText);
@@ -134,9 +128,7 @@ export default function Post() {
         setImageUploadProgress(0);
         return;
       }
-
       const data = await res.json();
-
       if (data.success) {
         setImageUploadProgress(100);
         console.log('Image URL length:', data.imageUrl ? data.imageUrl.length : 'No URL');
@@ -146,8 +138,6 @@ export default function Post() {
           image: data.imageUrl
         }));
         setImageUploadError(null);
-
-        // Reset progress after a short delay
         setTimeout(() => {
           setImageUploadProgress(0);
         }, 1000);
@@ -163,7 +153,6 @@ export default function Post() {
       setIsUploading(false);
     }
   };
-
   return (
     <div>
       <div className='p-3 max-w-3xl mx-auto  min-h-screen'>
@@ -235,7 +224,6 @@ export default function Post() {
             </Button>
           </div>
 
-          {/* Preview of selected image before upload */}
           {file && !formData.image && (
             <div className='relative'>
               <img

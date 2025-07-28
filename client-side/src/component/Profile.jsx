@@ -24,7 +24,7 @@ import { Link } from 'react-router-dom';
 import { getProfileImageUrlWithFallback, handleImageError } from '../utils/imageUtils';
 
 export default function Profile() {
-    const { currentUser } = useSelector((state) => state.user);
+    const {currentUser} = useSelector((state) => state.user);
     const [imageFileUrl, setImageFileUrl] = useState(null);
     const [imageFile, setImageFile] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
@@ -38,7 +38,6 @@ export default function Profile() {
             const timer = setTimeout(() => {
                 setSuccessMessage('');
             }, 2000);
-
             return () => clearTimeout(timer);
         }
     }, [successMessage]);
@@ -50,7 +49,6 @@ export default function Profile() {
         profilePicture: currentUser?.profilePicture || '',
     })
 
-    // Update form data when currentUser changes
     useEffect(() => {
         if (currentUser) {
             setFormData({
@@ -72,7 +70,6 @@ export default function Profile() {
         setSuccessMessage('')
 
         try {
-            // Create update object with only changed fields
             const updateData = {};
             
             if (formData.username && formData.username !== currentUser?.username) {
@@ -88,7 +85,6 @@ export default function Profile() {
                 updateData.profilePicture = formData.profilePicture;
             }
             
-            // Only send request if there are changes
             if (Object.keys(updateData).length === 0) {
                 setSuccessMessage('No changes to update');
                 return;

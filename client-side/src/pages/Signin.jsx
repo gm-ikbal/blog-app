@@ -23,7 +23,6 @@ export default function Signin() {
       return dispatch(signInFailure("Please fill in all fields"));
     }
     try {
-      
       dispatch(signInStart());  
       const res = await fetch("/user/signin", {
         method: "POST",
@@ -44,7 +43,6 @@ export default function Signin() {
     } catch (error) {
       dispatch(signInFailure(error.message));
     }
-
   };
   return (
     <div className='min-h-screen mt-20'>
